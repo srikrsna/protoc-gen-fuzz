@@ -1,0 +1,20 @@
+syntax = "proto3";
+
+package pb;
+
+option go_package = "github.com/srikrsna/protoc-gen-fuzz/example;pb";
+
+message SomeMessage {
+  string string_field = 1;
+  int32 int32_field = 2;
+  bool bool_field = 3;
+  InnerMessage inner_message = 4;
+  oneof some_oneof {
+    string oneof_string = 5;
+    bool oneof_bool = 6;
+  }
+  repeated string slice_string = 7;
+  repeated InnerMessage slice_message = 8;
+}
+
+message InnerMessage { string inner_field = 1; }

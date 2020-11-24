@@ -1,0 +1,17 @@
+
+func Fuzz{{ . | Name }}(msg *pb.{{ . | Name }}, c fuzz.Continue) {
+{{- range .NonOneOfFields }}
+    c.Fuzz(&msg.{{. | Name }})
+{{- end }}    
+
+{{- range .OneOfs -}}{{ $fn := . | Name }}
+    switch c.Int31n({{ .Fields | len }}) {
+    {{- range $i, $e := .Fields }}
+    case {{ $i }}:
+        var f pb.{{ $e | OneOfOption }}
+        c.Fuzz(&f)
+        msg.{{ $fn }} = &f
+    {{- end }}
+    }
+{{- end }}
+}

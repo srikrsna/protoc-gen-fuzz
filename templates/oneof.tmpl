@@ -1,0 +1,4 @@
+ 
+func Fuzz{{ . | OneOfOption }}(msg *pb.{{ . | OneOfOption }}, c fuzz.Continue) {
+    c.Fuzz(&msg.{{ . | Name }})
+}

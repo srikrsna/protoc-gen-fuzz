@@ -1,0 +1,16 @@
+package fuzz
+
+var ff = [...]interface{}{
+	{{- range .Files }}
+        {{- range .AllMessages }}
+			Fuzz{{ . | Name }},
+			{{- range .OneOfFields }}
+			Fuzz{{ . | OneOfOption }},
+			{{- end }}
+		{{- end }}
+    {{- end }}
+}
+
+func FuzzFuncs() []interface{} {
+	return ff[:]
+}

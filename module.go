@@ -1,14 +1,14 @@
 package main
 
 import (
+	"embed"
+	"io/fs"
 	"io/ioutil"
-	"os"
 	"strings"
 	"text/template"
 
 	pgs "github.com/lyft/protoc-gen-star"
 	pgsgo "github.com/lyft/protoc-gen-star/lang/go"
-	"github.com/markbates/pkger"
 )
 
 type module struct {
@@ -68,10 +68,13 @@ func (m *module) Execute(files map[string]pgs.File, _ map[string]pgs.Package) []
 	return m.Artifacts()
 }
 
+//go:embed templates/*.tmpl
+var tfs embed.FS
+
 func parseTemplates(fm template.FuncMap) (*template.Template, error) {
 	tpl := template.New("fuzz").Funcs(fm)
 
-	if err := pkger.Walk("/templates/", func(path string, info os.FileInfo, err error) error {
+	if err := fs.WalkDir(tfs, ".", func(path string, info fs.DirEntry, err error) error {
 		if err != nil {
 			return err
 		}
@@ -80,7 +83,7 @@ func parseTemplates(fm template.FuncMap) (*template.Template, error) {
 			return nil
 		}
 
-		f, err := pkger.Open(path)
+		f, err := tfs.Open(path)
 		if err != nil {
 			return err
 		}
@@ -97,7 +100,7 @@ func parseTemplates(fm template.FuncMap) (*template.Template, error) {
 
 		return nil
 	}); err != nil {
-		return tpl, err
+		return nil, err
 	}
 
 	return tpl, nil

@@ -24,7 +24,7 @@ func FuzzAny(msg *anypb.Any, c fuzz.Continue) {
 // FuzzStruct can be used to Fuzz google.protobuf.Struct messages.
 // # of fields will be in [0, 64). Each field will be one of float, bool, or string
 func FuzzStruct(msg *structpb.Struct, c fuzz.Continue) {
-	fc := c.Rand.Int() % 64
+	fc := c.Rand.Intn(21)
 	msg.Fields = make(map[string]*structpb.Value, fc)
 	for i := 0; i < fc; i++ {
 		var v *structpb.Value

@@ -3,9 +3,11 @@ package wkt_test
 import (
 	"testing"
 
+	"github.com/google/go-cmp/cmp"
 	fuzz "github.com/google/gofuzz"
 	"github.com/srikrsna/protoc-gen-fuzz/wkt"
 	"google.golang.org/protobuf/encoding/protojson"
+	"google.golang.org/protobuf/testing/protocmp"
 	"google.golang.org/protobuf/types/known/anypb"
 	"google.golang.org/protobuf/types/known/durationpb"
 	"google.golang.org/protobuf/types/known/structpb"
@@ -25,6 +27,10 @@ func TestFuzzAny(t *testing.T) {
 	var act anypb.Any
 	if err := protojson.Unmarshal(buf, &act); err != nil {
 		t.Fatal(err)
+	}
+
+	if !cmp.Equal(&exp, &act, protocmp.Transform()) {
+		t.Fatal("any cannot be checked using proto.Equal")
 	}
 }
 

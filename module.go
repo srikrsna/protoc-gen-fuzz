@@ -52,7 +52,7 @@ func (m *module) Execute(files map[string]pgs.File, _ map[string]pgs.Package) []
 		fp := m.goContext.OutputPath(f)
 		of := fp.Dir().Push("fuzz").Push(fp.BaseName()).SetExt(".fz.go").String()
 		m.AddGeneratorTemplateFile(of, m.tpl.Lookup("header"), f)
-		for _, msg := range f.Messages() {
+		for _, msg := range f.AllMessages() {
 			m.AddGeneratorTemplateAppend(of, m.tpl.Lookup("message"), msg)
 
 			for _, o := range msg.OneOfFields() {
